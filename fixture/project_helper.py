@@ -47,4 +47,22 @@ class Project_helper:
             project_data_list.append(ProjectData(id=id, project_name=project_name, description=description))
         return project_data_list
 
+    def delete_first_project(self):
+        wd = self.app.wd
+        projects = self.get_project_objects()
+
+        project = projects[0]
+        project_name = project.find_element(By.XPATH, "td[1]").text
+        description = project.find_element(By.XPATH, "td[5]").text
+        project_link = project.find_element(By.TAG_NAME, "a").get_attribute('href')
+        id = re.search("id=([^\n]+)", project_link).group(0)[3:]
+
+        project.find_element(By.TAG_NAME, "a").click()
+        wd.find_element_by_xpath("//input[@value='Delete Project']").click()
+        wd.find_element_by_xpath("//input[@value='Delete Project']").click()
+        deleted_project = ProjectData(id=id, project_name=project_name, description=description)
+        return deleted_project
+
+
+
 
