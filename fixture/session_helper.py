@@ -8,16 +8,16 @@ class SessionHelper:
     def __init__(self, app):
         self.app = app
 
-    def login(self, userdata):
+    def login(self, username, password):
         wd = self.app.wd
         self.app.open_main_page()
         WebDriverWait(wd, 20).until(EC.presence_of_element_located((By.NAME, "username")))
         username_field = wd.find_element_by_name("username")
         username_field.clear()
-        username_field.send_keys(userdata.username)
+        username_field.send_keys(username)
         wd.find_element_by_name("password").click()
         wd.find_element_by_name("password").clear()
-        wd.find_element_by_name("password").send_keys(userdata.password)
+        wd.find_element_by_name("password").send_keys(password)
         wd.find_element_by_xpath("//input[@value='Login']").click()
 
     def logout(self):
@@ -35,7 +35,7 @@ class SessionHelper:
 
     def is_logged_in_as(self, username):
         wd = self.app.wd
-        return wd.find_element_by_xpath("//div/div[1]/form/b").text == "(" + username + ")"
+        return wd.find_element_by_css_selector("td.login-info-left span").text == username
 
     def ensure_login(self, userdata):
         if self.is_logged_in():

@@ -1,8 +1,9 @@
 {
   "web": {
-     "baseUrl": "http://localhost/mantisbt-1.2.20/index.php"
+    "baseUrl": "http://localhost/mantisbt-1.2.20",
+    "browser": "firefox"
   },
-  "webadmin": {
+  "adminweb": {
     "user": "administrator",
     "password": "root"
   }
