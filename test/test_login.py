@@ -1,5 +1,6 @@
 import time
 
+from fixture.generator_helper import GeneratorHelper
 from model.project_data import ProjectData
 
 
@@ -9,4 +10,9 @@ def test_login(app):
 
 
 def test_create_project(app):
-    app.project.create_project(ProjectData(project_name="TEST"))
+    old_projects = app.project.get_projects_data()
+    created_project = app.project.create_project(ProjectData(project_name=GeneratorHelper().random_str("project", 10), description="sdsd"))
+    actual_projects = app.project.get_projects_data()
+    old_projects.append(created_project)
+
+    assert sorted(old_projects, key=ProjectData.id_or_max) == sorted(actual_projects, key=ProjectData.id_or_max)
