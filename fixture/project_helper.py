@@ -1,4 +1,3 @@
-import time
 import re
 from selenium.webdriver.common.by import By
 from fixture.page_opener import PageOpener
@@ -7,6 +6,7 @@ from model.project_data import ProjectData
 
 
 class Project_helper:
+    project_cache = None
 
     def __init__(self, app):
         self.app = app
@@ -29,7 +29,9 @@ class Project_helper:
         if project_data.description:
             self.input_text_in_field(selector_name="description", text=project_data.description)
         wd.find_element_by_class_name("button").click()
-        return ProjectData(id=project_data.id, project_name=project_data.project_name,description=project_data.description)
+        self.project_cache = None
+        return ProjectData(id=project_data.id, project_name=project_data.project_name,
+                           description=project_data.description)
 
     def get_project_objects(self):
         wd = self.app.wd
@@ -37,6 +39,8 @@ class Project_helper:
         return wd.find_elements_by_xpath("/html/body/table[3]/tbody/tr")[2:]
 
     def get_projects_data(self):
+        if self.project_cache:
+            return list(self.project_cache)
         project_data_list = []
         all_projects_data = self.get_project_objects()
         for project_data in all_projects_data:
@@ -61,8 +65,5 @@ class Project_helper:
         wd.find_element_by_xpath("//input[@value='Delete Project']").click()
         wd.find_element_by_xpath("//input[@value='Delete Project']").click()
         deleted_project = ProjectData(id=id, project_name=project_name, description=description)
+        self.project_cache = None
         return deleted_project
-
-
-
-
