@@ -1,5 +1,8 @@
 from selenium import webdriver
 from selenium.common.exceptions import NoAlertPresentException, NoSuchElementException
+
+from fixture.page_opener import PageOpener
+from fixture.project_helper import Project_helper
 from fixture.session_helper import SessionHelper
 
 
@@ -13,6 +16,8 @@ class Application:
             raise ValueError("Couldn't open any browser")
 
         self.session = SessionHelper(self)
+        self.page_opener = PageOpener(self)
+        self.project = Project_helper(self)
         self.base_url = base_url
 
     def is_valid(self):

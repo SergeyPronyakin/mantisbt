@@ -3,6 +3,7 @@ import os.path
 from fixture.application import Application
 import pytest
 from fixture.db import DbFixture
+from model.user import User
 
 fixture = None
 target = None
@@ -20,9 +21,11 @@ def load_config(file):
 @pytest.fixture
 def app(request):
     global fixture
-    web_config = load_config(request.config.getoption("--target"))["web"]
+    web_config = load_config(request.config.getoption("--target"))
     if fixture is None or not fixture.is_valid():
-        fixture = Application(browser=web_config["browser"], base_url=web_config["baseUrl"])
+        fixture = Application(browser=web_config["web"]["browser"], base_url=web_config["web"]["baseUrl"])
+        fixture.session.ensure_login(User(username=web_config["adminweb"]["user"],
+                                          password=web_config["adminweb"]["password"]))
     return fixture
 
 
