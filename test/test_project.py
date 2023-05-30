@@ -23,6 +23,6 @@ def test_delete_project(app):
 
 
 def test_signup_new_account(app):
-    username = ""
-    password = ""
+    username = "user01"
+    password = "test"
     app.james.insure_user_exist(username, password)
