@@ -4,6 +4,7 @@ from selenium.common.exceptions import NoAlertPresentException, NoSuchElementExc
 from fixture.page_opener import PageOpener
 from fixture.project_helper import Project_helper
 from fixture.session_helper import SessionHelper
+from fixture.james_helper import JamesHelper
 
 
 class Application:
@@ -18,6 +19,7 @@ class Application:
         self.session = SessionHelper(self)
         self.page_opener = PageOpener(self)
         self.project = Project_helper(self)
+        self.james = JamesHelper(self)
         self.base_url = base_url
 
     def is_valid(self):

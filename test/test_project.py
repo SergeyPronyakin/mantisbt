@@ -20,3 +20,9 @@ def test_delete_project(app):
     new_projects = app.project.get_projects_data()
     new_projects.append(deleted_project)
     assert sorted(old_projects, key=ProjectData.id_or_max) == sorted(new_projects, key=ProjectData.id_or_max)
+
+
+def test_signup_new_account(app):
+    username = ""
+    password = ""
+    app.james.insure_user_exist(username, password)
