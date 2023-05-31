@@ -7,7 +7,9 @@ class JamesHelper:
         self.app = app
 
     def insure_user_exist(self, username, password):
-        session = JamesHelper.Session(host="localhost", port=4555, username="root", password="root")
+        jemes_config = self.app.config["james"]
+        session = JamesHelper.Session(host=jemes_config["host"], port=jemes_config["port"],
+                                      username=jemes_config["username"], password=jemes_config["password"])
         if session.is_user_registered(username):
             session.reset_password(username, password)
         else:
@@ -17,7 +19,6 @@ class JamesHelper:
     class Session:
 
         def __init__(self, host, port, username, password):
-            #jemes_config = self.app.config["jemes"]
             self.telnet = Telnet(host, port, 5)
             self.read_until("Login id:")
             self.write(username + "\n")

@@ -45,7 +45,7 @@ def config(request):
 def app(request, config):
     global fixture
     if fixture is None or not fixture.is_valid():
-        fixture = Application(browser=config["web"]["browser"], base_url=config["web"]["baseUrl"])
+        fixture = Application(browser=config["web"]["browser"], config=config)
         fixture.session.ensure_login(User(username=config["adminweb"]["user"],
                                           password=config["adminweb"]["password"]))
     return fixture

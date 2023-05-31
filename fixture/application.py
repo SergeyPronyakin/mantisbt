@@ -5,10 +5,12 @@ from fixture.page_opener import PageOpener
 from fixture.project_helper import Project_helper
 from fixture.session_helper import SessionHelper
 from fixture.james_helper import JamesHelper
+from fixture.signup import SignupHelper
+from fixture.mail import MailHelper
 
 
 class Application:
-    def __init__(self, browser, base_url):
+    def __init__(self, browser, config):
         if browser == "firefox":
             self.wd = webdriver.Firefox()
         elif browser == "chrome":
@@ -20,7 +22,10 @@ class Application:
         self.page_opener = PageOpener(self)
         self.project = Project_helper(self)
         self.james = JamesHelper(self)
-        self.base_url = base_url
+        self.signup = SignupHelper(self)
+        self.mail = MailHelper(self)
+        self.config = config
+        self.base_url = config["web"]["baseUrl"]
 
     def is_valid(self):
         try:
