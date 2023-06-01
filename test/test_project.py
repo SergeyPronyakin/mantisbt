@@ -23,11 +23,12 @@ def test_delete_project(app):
 
 
 def test_signup_new_account(app):
-    username = GeneratorHelper().random_str("User_", 10)
+    username = GeneratorHelper().random_str("User", 10)
     password = "test"
     email = username + "@localhost"
     app.james.insure_user_exist(username, password)
     app.signup.new_user(username, email, password)
-    app.session.login(username)
-    assert app.session.is_logged_in_as(username)
-    app.session.logout()
+    # app.session.login(username)
+    # assert app.session.is_logged_in_as(username)
+    # app.session.logout()
+    assert app.soap.can_login(username, password)
