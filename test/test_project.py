@@ -1,12 +1,13 @@
 from fixture.generator_helper import GeneratorHelper
 from model.project_data import ProjectData
+from model.user import User
 
 
 def test_create_project(app):
-    old_projects = app.project.get_projects_data()
+    admin_data = User(username=app.config["adminweb"]["user"], password=app.config["adminweb"]["password"])
+    old_projects = app.soap.get_projects(admin_data.username, admin_data.password)
     created_project = app.project.create_project(ProjectData(project_name=GeneratorHelper().random_str("project", 10), description="sdsd"))
-    app.soap.get_projects("administrator", "root")
-    actual_projects = app.project.get_projects_data()
+    actual_projects = app.soap.get_projects(admin_data.username, admin_data.password)
     old_projects.append(created_project)
     assert sorted(old_projects, key=ProjectData.id_or_max) == sorted(actual_projects, key=ProjectData.id_or_max)
 
@@ -16,11 +17,11 @@ def test_delete_project(app):
         app.project.create_project(
             ProjectData(project_name=GeneratorHelper().random_str("project", 10)))
 
-    old_projects = app.project.get_projects_data()
+    old_projects = app.soap.get_projects()
     deleted_project = app.project.delete_first_project()
-    new_projects = app.project.get_projects_data()
-    new_projects.append(deleted_project)
-    assert sorted(old_projects, key=ProjectData.id_or_max) == sorted(new_projects, key=ProjectData.id_or_max)
+    actual_projects = app.soap.get_projects(username=app.config["adminweb"]["user"], password=app.config["adminweb"]["password"])
+    actual_projects.append(deleted_project)
+    assert sorted(old_projects, key=ProjectData.id_or_max) == sorted(actual_projects, key=ProjectData.id_or_max)
 
 
 def test_signup_new_account(app):
@@ -32,5 +33,3 @@ def test_signup_new_account(app):
     assert app.soap.can_login(username, password)
 
 
-def test_get_projects(app):
-    app.soap.get_projects("administrator", "root")
