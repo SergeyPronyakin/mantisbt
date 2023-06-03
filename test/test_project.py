@@ -5,6 +5,7 @@ from model.project_data import ProjectData
 def test_create_project(app):
     old_projects = app.project.get_projects_data()
     created_project = app.project.create_project(ProjectData(project_name=GeneratorHelper().random_str("project", 10), description="sdsd"))
+    app.soap.get_projects("administrator", "root")
     actual_projects = app.project.get_projects_data()
     old_projects.append(created_project)
     assert sorted(old_projects, key=ProjectData.id_or_max) == sorted(actual_projects, key=ProjectData.id_or_max)
@@ -23,9 +24,13 @@ def test_delete_project(app):
 
 
 def test_signup_new_account(app):
-    username = GeneratorHelper().random_str("User", 10)
+    username = GeneratorHelper().random_str("User_name", 10)
     password = "test"
     email = username + "@localhost"
     app.james.insure_user_exist(username, password)
     app.signup.new_user(username, email, password)
     assert app.soap.can_login(username, password)
+
+
+def test_get_projects(app):
+    app.soap.get_projects("administrator", "root")

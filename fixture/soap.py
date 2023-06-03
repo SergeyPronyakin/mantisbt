@@ -14,3 +14,11 @@ class SoapHelper:
             return True
         except WebFault:
             return False
+
+    def get_projects(self, username, password):
+        client = Client("http://localhost/mantisbt-1.2.20/api/soap/mantisconnect.wsdl")
+        try:
+            projects = client.service.mc_enum_project_status(username, password)
+            return projects
+        except WebFault:
+            return False
