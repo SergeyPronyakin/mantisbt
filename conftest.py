@@ -57,7 +57,6 @@ def configure_server(request, config):
 
     def fin():
         restore_server_configuration(config["ftp"]["host"], config["ftp"]["username"], config["ftp"]["password"])
-
     request.addfinalizer(fin)
 
 
