@@ -1,8 +1,7 @@
 from suds import WebFault
 from suds.client import Client
-
-from fixture.session_helper import SessionHelper
 from model.project_data import ProjectData
+import urllib.parse
 from model.user import User
 
 
@@ -12,7 +11,7 @@ class SoapHelper:
         self.app = app
 
     def can_login(self, username, password):
-        client = Client("http://localhost/mantisbt-1.2.20/api/soap/mantisconnect.php?wsdl")
+        client = Client(self.soap_url())
         try:
             response = client.service.mc_login(username, password)
             print(response)
@@ -20,17 +19,17 @@ class SoapHelper:
         except WebFault:
             return False
 
-    def get_projects(self,username, password):
-        client = Client("http://localhost/mantisbt-1.2.20/api/soap/mantisconnect.php?wsdl")
+    def get_projects(self):
+        client = Client(self.soap_url())
         try:
-            projects = client.service.mc_projects_get_user_accessible(username, password)
-            project_list = []
-            for project in projects:
-                id = project["id"]
-                name = project["name"]
-                description = project["description"]
-                project_list.append(ProjectData(id=id, project_name=name, description=description))
-            return project_list
-
+            projects = client.service.mc_projects_get_user_accessible(self.admin_creds().username,
+                                                                      self.admin_creds().password)
+            return [ProjectData(id=project["id"], project_name=project["name"], description=project["description"])for project in projects]
         except WebFault:
             return False
+
+    def admin_creds(self):
+        return User(username=self.app.config["adminweb"]["user"], password=self.app.config["adminweb"]["password"])
+
+    def soap_url(self):
+        return urllib.parse.urljoin(self.app.config["web"]["baseUrl"], "api/soap/mantisconnect.php?wsdl")
